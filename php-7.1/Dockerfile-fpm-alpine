@@ -1,7 +1,7 @@
 # PHP Docker image for Yii 2.0 Framework runtime
 # ==============================================
 
-FROM php:7.1-fpm-alpine
+FROM php:7.1.3-fpm-alpine
 
 # Install system packages & PHP extensions required for Yii 2.0 Framework
 RUN apk --update add \
@@ -75,11 +75,8 @@ RUN npm install -g \
 # Configure version constraints
 ENV PHP_USER_ID=33 \
     PHP_ENABLE_XDEBUG=0 \
-    VERSION_COMPOSER_MERGE_PLUGIN=^1.3.1 \
     VERSION_COMPOSER_ASSET_PLUGIN=^1.2.2 \
     VERSION_PRESTISSIMO_PLUGIN=^0.3.0 \
-    VERSION_CODECEPTION=^2.2.6 \
-    VERSION_YII2=^2.0.9 \
     PATH=/app:/app/vendor/bin:/root/.composer/vendor/bin:$PATH \
     TERM=linux \
     COMPOSER_ALLOW_SUPERUSER=1
@@ -98,18 +95,9 @@ RUN curl -sS https://getcomposer.org/installer | php -- \
         --filename=composer.phar \
         --install-dir=/usr/local/bin && \
     composer global require --optimize-autoloader \
-        "wikimedia/composer-merge-plugin:${VERSION_COMPOSER_MERGE_PLUGIN}" \
         "fxp/composer-asset-plugin:${VERSION_COMPOSER_ASSET_PLUGIN}" \
         "hirak/prestissimo:${VERSION_PRESTISSIMO_PLUGIN}" && \
     composer global dumpautoload --optimize
-
-# Install CLI packages required for Yii 2.0 Framework globally
-RUN composer global require  --prefer-dist \
-        "codeception/codeception:${VERSION_CODECEPTION}" \
-        "codeception/specify:*" \
-        "codeception/verify:*" && \
-    composer global dumpautoload --optimize
-
 
 WORKDIR /app
 
